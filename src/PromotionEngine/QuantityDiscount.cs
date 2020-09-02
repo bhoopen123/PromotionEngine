@@ -11,7 +11,7 @@ namespace PromotionEngine
         {
             public char productId;
             public int quantity;
-            public decimal discountedPrice;
+            public decimal discount;
         }
 
         private List<DiscountProduct> _discountProducts = null;
@@ -21,44 +21,36 @@ namespace PromotionEngine
             // fill initail data
             _discountProducts = new List<DiscountProduct>();
 
-            SetQuantityDiscount('A', 3, 130m);
-            SetQuantityDiscount('B', 2, 45m);
+            SetQuantityDiscount('A', 3, 20m);   // 130 was the discounted price, so discount is 20
+            SetQuantityDiscount('B', 2, 15m);   // 45 was the discounted price, so discount is 15
         }
 
-        public void SetQuantityDiscount(char productId, int quantity, decimal discountedPrice)
+        public void SetQuantityDiscount(char productId, int quantity, decimal discount)
         {
             // TODO : need to check if product already exist or not
             _discountProducts.Add(new DiscountProduct()
             {
                 productId = productId,
                 quantity = quantity,
-                discountedPrice = discountedPrice
+                discount = discount
             });
         }
 
-        public decimal ApplyDiscount(char[] productsInCart)
+        public decimal CalculateDiscount(IDictionary<char, int> products)
         {
-            // get all products
-            var allProducts = ProductManager.GetProducts;
+            var discount = decimal.Zero;
 
-            var discountedPrice = decimal.Zero;
-
-            var productsAndQuantity = productsInCart.GroupBy(p => p).ToDictionary(g => g.Key, g => g.Count());
-
-            foreach (var productId in productsAndQuantity.Keys)
+            foreach (var productId in products.Keys)
             {
-                var discountedProduct = _discountProducts.FirstOrDefault(p => p.productId.Equals(productId));
+                var discountDetails = _discountProducts.FirstOrDefault(p => p.productId.Equals(productId));
 
-                var actualProduct = allProducts.First(p => p.Id.Equals(productId));
-
-                if (discountedProduct == null)
+                if (discountDetails == null)
                     continue;
 
-                discountedPrice += (productsAndQuantity[productId] / discountedProduct.quantity) * discountedProduct.discountedPrice    // calculate discounted price
-                                        + (productsAndQuantity[productId] % discountedProduct.quantity) * actualProduct.Price;          // calculate actule price
+                discount += (products[productId] / discountDetails.quantity) * discountDetails.discount; // calculate discounted price
             }
 
-            return discountedPrice;
+            return discount;
         }
     }
 }

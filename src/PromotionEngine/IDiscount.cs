@@ -1,7 +1,9 @@
-﻿namespace PromotionEngine
+﻿using System.Collections.Generic;
+
+namespace PromotionEngine
 {
     public interface IDiscount
     {
-        decimal ApplyDiscount(char[] products);
+        decimal CalculateDiscount(IDictionary<char, int> products);
     }
 }

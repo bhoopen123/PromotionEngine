@@ -9,8 +9,8 @@ namespace PromotionEngine
         //model to store discounted product details
         private class GroupProduct
         {
-            public char[] productGroup;
-            public decimal discountedPrice;
+            public char[] products;
+            public decimal discount;
         }
 
         private List<GroupProduct> _discountProducts = null;
@@ -22,29 +22,24 @@ namespace PromotionEngine
 
             _discountProducts.Add(new GroupProduct()
             {
-                productGroup = new char[] { 'C', 'D' },
-                discountedPrice = 30m
+                products = new char[] { 'C', 'D' },
+                discount = 5m               // Discounted price for C & D was 30, so discount is 5
             });
         }
 
-        public decimal ApplyDiscount(char[] productsInCart)
+        public decimal CalculateDiscount(IDictionary<char, int> productsInCart)
         {
-            // get all products
-            var allProducts = ProductManager.GetProducts;
-
-            var discountedPrice = decimal.Zero;
-
-            var productsAndQuantity = productsInCart.GroupBy(p => p).ToDictionary(g => g.Key, g => g.Count());
+            var discount = decimal.Zero;
 
             for (int i = 0; i < _discountProducts.Count(); i++)
             {
-                var discountProduct = _discountProducts[i];
+                var discountDetails = _discountProducts[i];
 
                 bool discountFound = true;
 
-                foreach (var groupProductId in discountProduct.productGroup)
+                foreach (var productId in discountDetails.products)
                 {
-                    if (!productsAndQuantity.Keys.Contains(groupProductId))
+                    if (!productsInCart.Keys.Contains(productId) || productsInCart[productId] < 1)
                     {
                         discountFound = false;
                         break;
@@ -53,10 +48,11 @@ namespace PromotionEngine
 
                 if (discountFound)
                 {
-                    discountedPrice += discountProduct.discountedPrice;
-                    foreach (var groupProductId in discountProduct.productGroup)
+                    discount += discountDetails.discount;
+
+                    foreach (var productId in discountDetails.products)
                     {
-                        productsAndQuantity[groupProductId]--;
+                        productsInCart[productId]--;
                     }
 
                     i--;
@@ -64,7 +60,7 @@ namespace PromotionEngine
             }
 
 
-            return discountedPrice;
+            return discount;
         }
     }
 }
