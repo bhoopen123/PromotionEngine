@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PromotionEngine
 {
@@ -18,14 +19,25 @@ namespace PromotionEngine
             // any new dicsountCalculator
         }
 
-        public decimal Calculate(char[] productsInCart)
+        public decimal Calculate(char[] products)
         {
             decimal discountedPrice = decimal.Zero;
+
+            var productsAndQuantity = products.GroupBy(p => p).ToDictionary(g => g.Key, g => g.Count());
+
+            // calculate the price without discounts
+            var allProducts = ProductManager.GetProducts;
             
+            foreach (var productId in productsAndQuantity.Keys)
+            {
+                discountedPrice += allProducts.Find(p => p.Id.Equals(productId)).Price
+                                        * productsAndQuantity[productId];
+            }
+
             // applying discount or promotions on products
             foreach (var discountCalculator in _discountCalculators)
             {
-                discountedPrice += discountCalculator.ApplyDiscount(productsInCart);
+                discountedPrice -= discountCalculator.CalculateDiscount(productsAndQuantity);
             }
 
             return discountedPrice;
