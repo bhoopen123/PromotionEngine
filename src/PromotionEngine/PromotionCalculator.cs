@@ -1,6 +1,6 @@
 ﻿
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace PromotionEngine
 {
@@ -15,8 +15,9 @@ namespace PromotionEngine
             // adding all types of discount calculator
             _discountCalculators.Add(new QuantityDiscount());
             _discountCalculators.Add(new GroupDiscount());
-            
-            // any new dicsountCalculator
+
+            // any new discountCalculator
+            //_discountCalculators.Add(new PercentageDiscount());
         }
 
         public decimal Calculate(char[] products)
