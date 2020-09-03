@@ -41,5 +41,16 @@ namespace PromotionEngine.Tests
 
             Assert.Equal(actual, expected, 2);
         }
+
+
+        [Fact]
+        public void CalulateWith_GroupPromotions()
+        {
+            var actual = _promotionCalculator.Calculate(new char[] { 'C', 'D', 'C', 'D' });
+
+            var expected = 60m;
+
+            Assert.Equal(actual, expected, 2);
+        }
     }
 }
