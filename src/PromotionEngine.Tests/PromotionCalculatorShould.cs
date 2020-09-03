@@ -52,5 +52,15 @@ namespace PromotionEngine.Tests
 
             Assert.Equal(actual, expected, 2);
         }
+
+        [Fact]
+        public void CalulateWhen_CartIsNull()
+        {
+            var actual = _promotionCalculator.Calculate(null);
+
+            var expected = decimal.Zero;
+
+            Assert.Equal(actual, expected, 2);
+        }
     }
 }
