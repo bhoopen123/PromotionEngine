@@ -1,6 +1,7 @@
 ﻿
 using System.Linq;
 using System.Collections.Generic;
+using System;
 
 namespace PromotionEngine
 {
@@ -23,6 +24,9 @@ namespace PromotionEngine
         public decimal Calculate(char[] products)
         {
             decimal discountedPrice = decimal.Zero;
+
+            if (products == null || products.Length == 0)
+                return decimal.Zero;
 
             var productsAndQuantity = products.GroupBy(p => p).ToDictionary(g => g.Key, g => g.Count());
 
