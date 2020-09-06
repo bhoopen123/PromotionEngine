@@ -1,0 +1,29 @@
+
+[<abstract> IDiscount | this provides a contract for discount calculation | CalculateDiscount(productsInCart:list<products>):decimal
+]
+
+[GroupDiscount | CalculateDiscount(productsInCart:list<products>):decimal]
+[QuantityDiscount | CalculateDiscount(productsInCart:list<products>):decimal]
+
+[GroupDiscount] --:> [IDiscount]
+[QuantityDiscount]--:> [IDiscount]
+
+[GroupDiscount] -> [ProductManager]
+[QuantityDiscount] -> [ProductManager]
+
+[Product | + productId : int; + price : decimal]
+
+[ProductManager | 
++ GetAllProducts() : list<Product>; 
++ Add(Product); 
++ Add(list<Product>); 
++ Update(productId, Product) : Product; 
++ Remove(productId)
+]
+
+[ProductManager] -- has [Product]
+
+[PromotionEngine | - discountCalculators : list<IDiscount> | ApplyPromotions(list<Product>) : decimal]
+[PromotionEngine] -> [GroupDiscount] 
+[PromotionEngine] -> [QuantityDiscount] 
+[PromotionEngine] -> [IDiscount] 
